@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, ManyToMany } from 'typeorm'
+import { Site } from '../site/site.entity'
+import { Subject } from '../subject/subject.entity'
 @Entity()
 export class Post {
     @PrimaryGeneratedColumn()
@@ -18,4 +20,10 @@ export class Post {
 
     @UpdateDateColumn()
     updated: Date
+
+    @ManyToOne(type => Site, site => site.posts)
+    site: Site
+
+    @ManyToMany(type => Subject, subject => subject.posts)
+    subjects: Subject []
 }
