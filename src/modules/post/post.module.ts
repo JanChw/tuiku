@@ -9,6 +9,7 @@ import { SubjectModule } from '../subject/subject.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Post]), SiteModule, SubjectModule],
   controllers: [PostController],
-  providers: [PostService]
+  providers: [PostService],
+  exports: [PostService]
 })
 export class PostModule {}

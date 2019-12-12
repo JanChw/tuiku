@@ -1,7 +1,8 @@
 import { Controller, Get, Post, Body, Delete, Query, ParseIntPipe, Put, Param } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CategoryDto } from './category.dto';
-
+import { Ids } from '../../core/decorators/ids.decorator'
+import { Actions } from 'src/core/enums/actions.enum';
 
 @Controller('category')
 export class CategoryController {
@@ -32,5 +33,11 @@ export class CategoryController {
     @Get()
     async getPostsByCategory (@Query('category') category: string) {
         return await this.categoryService.getPostsByCategory(category)
+    }
+
+    @Put(':id/posts/:type')
+    async addPostToCategory (@Param('type') type: Actions, @Param('id', ParseIntPipe) id:number, @Ids() ids: number[]) {
+        return await this.categoryService.DeleteOrAddPostToCategory(type,id, ids)
+
     }
 }

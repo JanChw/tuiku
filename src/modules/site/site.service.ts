@@ -48,4 +48,5 @@ export class SiteService {
     async update (id: number, data: Partial<SiteDto>) {
         return await this.site.update(id, data)
     }
+    
 }

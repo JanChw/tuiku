@@ -28,7 +28,13 @@ export class PostService {
         return await this.post.findOne(id, {
             relations: ['site', 'subjects']
         })
-    } 
+    }
+    
+    async findByIds (ids: number[]) {
+        return await this.post.createQueryBuilder()
+        .where('id in (:...ids)', { ids })
+        .getMany()
+    }
 
     async store (data: PostDto) {
         let { site, subjects } = data
