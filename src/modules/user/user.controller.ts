@@ -1,7 +1,12 @@
-import { Controller, Post, Body, Put, ParseIntPipe, Param, UseInterceptors, ClassSerializerInterceptor} from '@nestjs/common';
+import { Controller, Post, Body, Put, ParseIntPipe, Param, UseInterceptors, ClassSerializerInterceptor, UseGuards} from '@nestjs/common';
 import { UserService } from './user.service';
 
 import { UserDto, UpdateUserPasswordDto } from './user.dto';
+import { Role } from '../role/role.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { AccessGuard } from 'src/core/guards/access.guard';
+import { Permissions } from 'src/core/decorators/perssions.decorator';
+import { UserRole } from 'src/core/enums/user-role.enum';
 
 @Controller('user')
 export class UserController {
@@ -21,5 +26,14 @@ export class UserController {
         console.log(data)
         return await this.userService.updatePassword(id, data)
     }
+
+    @Put(':id/roles')
+    @UseInterceptors(ClassSerializerInterceptor)
+    @UseGuards(AuthGuard('jwt'), AccessGuard)
+    @Permissions({role: UserRole.SUPERADMIN})
+    async updateRoles (@Param('id', ParseIntPipe) id: number, @Body('roles') data: UserRole[]) {
+        return await this.userService.updateRoles(id, data)
+    }
+
 
 }

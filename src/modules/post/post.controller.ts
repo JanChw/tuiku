@@ -1,7 +1,8 @@
-import { Controller, Get, Query, ParseIntPipe, Body, Post, Put, Delete, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Query, ParseIntPipe, Body, Post, Put, Delete, Param, NotFoundException, UseGuards } from '@nestjs/common';
 import { PostService } from './post.service';
 import { PostDto } from './post.dto';
 import { Ids } from 'src/core/decorators/ids.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('post')
 export class PostController {
@@ -37,6 +38,7 @@ export class PostController {
     }
 
     @Delete()
+    @UseGuards(AuthGuard('jwt'))
     async destory (@Ids() ids: number[]) {
         return this.postService.destroy(ids)
     }

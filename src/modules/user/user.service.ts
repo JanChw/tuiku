@@ -1,14 +1,17 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { UserDto, UpdateUserPasswordDto } from './user.dto'
+import { RoleService } from '../role/role.service';
+import { UserRole } from 'src/core/enums/user-role.enum';
 
 @Injectable()
 export class UserService {
     constructor (
         @InjectRepository(User)
-        private readonly user: Repository<User>
+        private readonly user: Repository<User>,
+        private readonly roleService: RoleService
     ) {}
 
     async store (data: UserDto) {
@@ -36,6 +39,19 @@ export class UserService {
     }
 
     async findByEmail (email: string) {
-        return await this.user.findOne({ email })
+        return await this.user.findOne({ email }, { relations: [
+            'roles'
+        ]})
+    }
+    
+    async updateRoles (id: number, data: UserRole []) {
+        let user = await this.user.findOne(id)
+        
+        if (user) {
+            let _roles = await this.roleService.findByNames(data)
+            user.roles = _roles
+        }
+
+        return await this.user.save(user)
     }
 }

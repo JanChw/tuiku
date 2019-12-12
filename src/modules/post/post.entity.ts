@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, ManyToMany } from 'typeorm'
 import { Site } from '../site/site.entity'
 import { Subject } from '../subject/subject.entity'
+import { Category } from '../category/category.entity'
 @Entity()
 export class Post {
     @PrimaryGeneratedColumn()
@@ -26,4 +27,7 @@ export class Post {
 
     @ManyToMany(type => Subject, subject => subject.posts)
     subjects: Subject []
+
+    @ManyToMany(type => Category, category => category.posts)
+    categories: Category[]
 }

@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate, ManyToMany, JoinTable } from "typeorm";
 import { Exclude } from 'class-transformer'
 import * as bcrypt from 'bcrypt'
+import { Role } from "../role/role.entity";
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
@@ -18,6 +19,10 @@ export class User {
 
     @UpdateDateColumn()
     updated: Date
+
+    @ManyToMany(type => Role, role => role.users)
+    @JoinTable()
+    roles: Role[]
 
     @BeforeInsert()
     @BeforeUpdate()
